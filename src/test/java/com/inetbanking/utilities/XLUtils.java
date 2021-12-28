@@ -1,6 +1,7 @@
 package com.inetbanking.utilities;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -46,42 +47,48 @@ public class XLUtils {
 	}
 	
 	
-	public static String getCellData(String xlfile,String xlsheet,int rownum,int colnum) throws IOException
+	public static String getCellData(String xlfile,String xlsheet,int rownum,int colnum)
 	{
-		fi=new FileInputStream(xlfile);
-		wb=new XSSFWorkbook(fi);
-		ws=wb.getSheet(xlsheet);
-		row=ws.getRow(rownum);
-		cell=row.getCell(colnum);
-		String data;
-		try 
-		{
+		String data = "Not Found";
+		try {
+			fi=new FileInputStream(xlfile);
+			wb=new XSSFWorkbook(fi);
+			ws=wb.getSheet(xlsheet);
+			row=ws.getRow(rownum);
+			cell=row.getCell(colnum);
 			DataFormatter formatter = new DataFormatter();
-            String cellData = formatter.formatCellValue(cell);
-            return cellData;
+			data = formatter.formatCellValue(cell);
+
+			wb.close();
+			fi.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		catch (Exception e) 
-		{
-			data="";
-		}
-		wb.close();
-		fi.close();
 		return data;
 	}
 	
-	public static void setCellData(String xlfile,String xlsheet,int rownum,int colnum,String data) throws IOException
+	public static void setCellData(String xlfile,String xlsheet,int rownum,int colnum,String data)
 	{
-		fi=new FileInputStream(xlfile);
-		wb=new XSSFWorkbook(fi);
-		ws=wb.getSheet(xlsheet);
-		row=ws.getRow(rownum);
-		cell=row.createCell(colnum);
-		cell.setCellValue(data);
-		fo=new FileOutputStream(xlfile);
-		wb.write(fo);		
-		wb.close();
-		fi.close();
-		fo.close();
+		try {
+			fi=new FileInputStream(xlfile);
+			wb=new XSSFWorkbook(fi);
+			ws=wb.getSheet(xlsheet);
+			row=ws.getRow(rownum);
+			cell=row.createCell(colnum);
+			cell.setCellValue(data);
+			fo=new FileOutputStream(xlfile);
+			wb.write(fo);
+			wb.close();
+			fi.close();
+			fo.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
